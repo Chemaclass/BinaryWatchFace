@@ -3,6 +3,8 @@ import Toybox.Lang;
 import Toybox.System;
 import Toybox.WatchUi;
 
+using Toybox.Graphics as Gfx;
+
 class BinaryWatchFaceView extends WatchUi.WatchFace {
 
     function initialize() {
@@ -24,12 +26,24 @@ class BinaryWatchFaceView extends WatchUi.WatchFace {
     function onUpdate(dc as Dc) as Void {
         // Get and show the current time
         var clockTime = System.getClockTime();
-        var timeString = Lang.format("$1$:$2$", [clockTime.hour, clockTime.min.format("%02d")]);
-        var view = View.findDrawableById("TimeLabel") as Text;
-        view.setText(timeString);
 
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
+        
+        var hour = clockTime.hour;
+        var font = Gfx.FONT_NUMBER_HOT;
+       
+        var widthScreen = dc.getWidth();
+        var heightScreen = dc.getHeight();
+        
+        var timeHourString = clockTime.hour.format("%02d");
+        var timeMinString = clockTime.min.format("%02d");
+        var timeSecString = clockTime.sec.format("%02d");
+        
+        dc.setColor(Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT);
+        dc.drawText(widthScreen/2, (heightScreen/2)-50, font, timeHourString, Gfx.TEXT_JUSTIFY_CENTER + Gfx.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(widthScreen/2, (heightScreen/2), font, timeMinString, Gfx.TEXT_JUSTIFY_CENTER + Gfx.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(widthScreen/2, (heightScreen/32)*24, font, timeSecString, Gfx.TEXT_JUSTIFY_CENTER + Gfx.TEXT_JUSTIFY_VCENTER);
     }
 
     // Called when this View is removed from the screen. Save the
