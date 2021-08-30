@@ -3,7 +3,7 @@ import Toybox.Lang;
 import Toybox.System;
 import Toybox.WatchUi;
 
-using Toybox.Graphics as Gfx;
+using Toybox.Graphics;
 
 class BinaryWatchFaceView extends WatchUi.WatchFace {
 
@@ -24,27 +24,59 @@ class BinaryWatchFaceView extends WatchUi.WatchFace {
 
     // Update the view
     function onUpdate(dc as Dc) as Void {
-        // Get and show the current time
-        var clockTime = System.getClockTime();
-
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
-        
-        var hour = clockTime.hour;
-        var font = Gfx.FONT_NUMBER_HOT;
-       
+
         var widthScreen = dc.getWidth();
         var heightScreen = dc.getHeight();
+
+        var clockTime = System.getClockTime();
+        var font = Graphics.FONT_LARGE * 2;
+
+        var timeHourString = padLeftZeros(decToBinary(clockTime.hour), 6);
+        var timeMinString  = padLeftZeros(decToBinary(clockTime.min),  6);
+        var timeSecString  = padLeftZeros(decToBinary(clockTime.sec),  6);
+
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(widthScreen/2, (heightScreen/2)-55, font, timeHourString, Graphics.TEXT_JUSTIFY_CENTER + Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(widthScreen/2, (heightScreen/2), font, timeMinString, Graphics.TEXT_JUSTIFY_CENTER + Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(widthScreen/2, (heightScreen/32)*25, font, timeSecString, Graphics.TEXT_JUSTIFY_CENTER + Graphics.TEXT_JUSTIFY_VCENTER);
         
-        var timeHourString = clockTime.hour.format("%02d");
-        var timeMinString = clockTime.min.format("%02d");
-        var timeSecString = clockTime.sec.format("%02d");
-        
-        dc.setColor(Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT);
-        dc.drawText(widthScreen/2, (heightScreen/2)-50, font, timeHourString, Gfx.TEXT_JUSTIFY_CENTER + Gfx.TEXT_JUSTIFY_VCENTER);
-        dc.drawText(widthScreen/2, (heightScreen/2), font, timeMinString, Gfx.TEXT_JUSTIFY_CENTER + Gfx.TEXT_JUSTIFY_VCENTER);
-        dc.drawText(widthScreen/2, (heightScreen/32)*24, font, timeSecString, Gfx.TEXT_JUSTIFY_CENTER + Gfx.TEXT_JUSTIFY_VCENTER);
+        System.println("hour in binary is: " + clockTime.hour.format("%02d"));
+        System.println("min in binary is: " + clockTime.min.format("%02d"));
+        System.println("sec in binary is: " + clockTime.sec.format("%02d"));
+        System.println("------------------------");        
     }
+
+    function decToBinary(n as Int) as String {
+        var binaryNum = new Int[32];
+        var i = 0;
+        while (n > 0) {
+            binaryNum[i] = n % 2;
+            n = n / 2;
+            i++;
+        }
+ 
+        var result = "";
+        for (var j = i - 1; j >= 0; j--) {
+            result += binaryNum[j];
+        }
+        
+        return result;
+    }
+    
+    function padLeftZeros(inputString as String, length as Int) as String {
+	    if (inputString.length() >= length) {
+	        return inputString;
+	    }
+	    var sb = "";
+	    while (sb.length() < length - inputString.length()) {
+	        sb += "0";
+	    }
+	    sb += inputString;
+	
+	    return sb.toString();
+	}
 
     // Called when this View is removed from the screen. Save the
     // state of this View here. This includes freeing resources from
