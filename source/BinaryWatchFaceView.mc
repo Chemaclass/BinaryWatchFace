@@ -31,21 +31,27 @@ class BinaryWatchFaceView extends WatchUi.WatchFace {
         var heightScreen = dc.getHeight();
 
         var clockTime = System.getClockTime();
-        var font = Graphics.FONT_LARGE * 2;
+        var fontBinary = Graphics.FONT_LARGE * 2;
+        var fontDecimal = Graphics.FONT_LARGE;
 
         var timeHourString = padLeftZeros(decToBinary(clockTime.hour), 6);
         var timeMinString  = padLeftZeros(decToBinary(clockTime.min),  6);
         var timeSecString  = padLeftZeros(decToBinary(clockTime.sec),  6);
 
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(widthScreen/2, (heightScreen/2)-55, font, timeHourString, Graphics.TEXT_JUSTIFY_CENTER + Graphics.TEXT_JUSTIFY_VCENTER);
-        dc.drawText(widthScreen/2, (heightScreen/2), font, timeMinString, Graphics.TEXT_JUSTIFY_CENTER + Graphics.TEXT_JUSTIFY_VCENTER);
-        dc.drawText(widthScreen/2, (heightScreen/32)*25, font, timeSecString, Graphics.TEXT_JUSTIFY_CENTER + Graphics.TEXT_JUSTIFY_VCENTER);
-        
-        System.println("hour in binary is: " + clockTime.hour.format("%02d"));
-        System.println("min in binary is: " + clockTime.min.format("%02d"));
-        System.println("sec in binary is: " + clockTime.sec.format("%02d"));
-        System.println("------------------------");        
+        dc.drawText(widthScreen/2, (heightScreen/2)-55, fontBinary, timeHourString, Graphics.TEXT_JUSTIFY_CENTER + Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(widthScreen/2+115, (heightScreen/2)-50, fontDecimal, clockTime.hour.format("%02d"), Graphics.TEXT_JUSTIFY_RIGHT);
+
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(widthScreen/2, (heightScreen/2), fontBinary, timeMinString, Graphics.TEXT_JUSTIFY_CENTER + Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(widthScreen/2+115, (heightScreen/2)-10, fontDecimal, clockTime.min.format("%02d"), Graphics.TEXT_JUSTIFY_RIGHT);
+
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(widthScreen/2, (heightScreen/32)*25, fontBinary, timeSecString, Graphics.TEXT_JUSTIFY_CENTER + Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(widthScreen/2+115, (heightScreen/2)+30, fontDecimal, clockTime.sec.format("%02d"), Graphics.TEXT_JUSTIFY_RIGHT);
     }
 
     function decToBinary(n as Int) as String {
