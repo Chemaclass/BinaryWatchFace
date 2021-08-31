@@ -3,9 +3,10 @@ import Toybox.Lang;
 import Toybox.System;
 import Toybox.WatchUi;
 
-using Toybox.Graphics;
-
 class BinaryWatchFaceView extends WatchUi.WatchFace {
+
+    private var widthScreen as Int;
+    private var heightScreen as Int;
 
     function initialize() {
         WatchFace.initialize();
@@ -14,6 +15,9 @@ class BinaryWatchFaceView extends WatchUi.WatchFace {
     // Load your resources here
     function onLayout(dc as Dc) as Void {
         setLayout(Rez.Layouts.WatchFace(dc));
+
+        widthScreen = dc.getWidth();
+        heightScreen = dc.getHeight();
     }
 
     // Called when this View is brought to the foreground. Restore
@@ -27,34 +31,49 @@ class BinaryWatchFaceView extends WatchUi.WatchFace {
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
 
-        var widthScreen = dc.getWidth();
-        var heightScreen = dc.getHeight();
-
         var clockTime = System.getClockTime();
-        var fontBinary = Graphics.FONT_LARGE * 2;
-        var fontDecimal = Graphics.FONT_LARGE;
 
-        var timeHourString = padLeftZeros(decToBinary(clockTime.hour), 6);
-        var timeMinString  = padLeftZeros(decToBinary(clockTime.min),  6);
-        var timeSecString  = padLeftZeros(decToBinary(clockTime.sec),  6);
-
-        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(widthScreen/2, (heightScreen/2)-55, fontBinary, timeHourString, Graphics.TEXT_JUSTIFY_CENTER + Graphics.TEXT_JUSTIFY_VCENTER);
-        dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(widthScreen/2+115, (heightScreen/2)-50, fontDecimal, clockTime.hour.format("%02d"), Graphics.TEXT_JUSTIFY_RIGHT);
-
-        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(widthScreen/2, (heightScreen/2), fontBinary, timeMinString, Graphics.TEXT_JUSTIFY_CENTER + Graphics.TEXT_JUSTIFY_VCENTER);
-        dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(widthScreen/2+115, (heightScreen/2)-10, fontDecimal, clockTime.min.format("%02d"), Graphics.TEXT_JUSTIFY_RIGHT);
-
-        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(widthScreen/2, (heightScreen/32)*25, fontBinary, timeSecString, Graphics.TEXT_JUSTIFY_CENTER + Graphics.TEXT_JUSTIFY_VCENTER);
-        dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(widthScreen/2+115, (heightScreen/2)+30, fontDecimal, clockTime.sec.format("%02d"), Graphics.TEXT_JUSTIFY_RIGHT);
+        drawHour(dc, clockTime);
+        drawMin(dc, clockTime);
+        drawSec(dc, clockTime);
+    }
+    
+    private function drawHour(dc as Dc, clockTime as ClockTime) as Void {
+        var binaryString = padLeftZeros(decToBinary(clockTime.hour), 6);
+        
+        drawBinary(dc, widthScreen/2, heightScreen/2 - 55, binaryString);
+        drawDecimal(dc, widthScreen/2+115, heightScreen/2 - 50, clockTime.hour.format("%02d"));
     }
 
-    function decToBinary(n as Int) as String {
+    private function drawMin(dc as Dc, clockTime as ClockTime) as Void {
+        var binaryString = padLeftZeros(decToBinary(clockTime.min), 6);
+        
+        drawBinary(dc, widthScreen/2, heightScreen/2, binaryString);
+        drawDecimal(dc, widthScreen/2+115, heightScreen/2 - 10, clockTime.min.format("%02d"));
+    }
+
+    private function drawSec(dc as Dc, clockTime as ClockTime) as Void {
+        var binaryString = padLeftZeros(decToBinary(clockTime.sec), 6);
+
+        drawBinary(dc, widthScreen/2, heightScreen/32 * 25, binaryString);
+        drawDecimal(dc, widthScreen/2+115, heightScreen/2 + 30, clockTime.sec.format("%02d"));
+    }
+
+    private function drawBinary(dc, width, height, timeString as String) as Void {
+        var font = Graphics.FONT_LARGE * 2;
+        
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(width, height, font, timeString, Graphics.TEXT_JUSTIFY_CENTER + Graphics.TEXT_JUSTIFY_VCENTER);
+    }
+
+    private function drawDecimal(dc, width, height, timeString as String) as Void {
+        var font = Graphics.FONT_LARGE;
+        
+        dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(width, height, font, timeString, Graphics.TEXT_JUSTIFY_RIGHT);
+    }
+
+    private function decToBinary(n as Int) as String {
         var binaryNum = new Int[32];
         var i = 0;
         while (n > 0) {
@@ -70,19 +89,20 @@ class BinaryWatchFaceView extends WatchUi.WatchFace {
         
         return result;
     }
+
+    private function padLeftZeros(inputString as String, length as Int) as String {
+        if (inputString.length() >= length) {
+            return inputString;
+        }
+
+        var sb = "";
+        while (sb.length() < length - inputString.length()) {
+            sb += "0";
+        }
+        sb += inputString;
     
-    function padLeftZeros(inputString as String, length as Int) as String {
-	    if (inputString.length() >= length) {
-	        return inputString;
-	    }
-	    var sb = "";
-	    while (sb.length() < length - inputString.length()) {
-	        sb += "0";
-	    }
-	    sb += inputString;
-	
-	    return sb.toString();
-	}
+        return sb.toString();
+    }
 
     // Called when this View is removed from the screen. Save the
     // state of this View here. This includes freeing resources from
@@ -97,5 +117,4 @@ class BinaryWatchFaceView extends WatchUi.WatchFace {
     // Terminate any active timers and prepare for slow updates.
     function onEnterSleep() as Void {
     }
-
 }
