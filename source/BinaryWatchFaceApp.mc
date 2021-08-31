@@ -1,6 +1,6 @@
-import Toybox.Application;
-import Toybox.Lang;
-import Toybox.WatchUi;
+using Toybox.Application;
+using Toybox.Lang;
+using Toybox.WatchUi;
 
 class BinaryWatchFaceApp extends Application.AppBase {
 

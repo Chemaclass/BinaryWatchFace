@@ -7,15 +7,15 @@ using Toybox.Time.Gregorian;
 
 class BinaryWatchFaceView extends WatchUi.WatchFace
 {
+    private var _binaryRenderer as BinaryRenderer;
 
-	private const BINARY_ZEROS_LENGTH = 6;
+    private var _widthScreen as Int;
+    private var _heightScreen as Int;
 
-    private var widthScreen as Int;
-    private var heightScreen as Int;
-
-    function initialize()
+    function initialize() as Void
     {
         WatchFace.initialize();
+        _binaryRenderer = new BinaryRenderer(6);
     }
 
     // Load your resources here
@@ -23,8 +23,8 @@ class BinaryWatchFaceView extends WatchUi.WatchFace
     {
         setLayout(Rez.Layouts.WatchFace(dc));
 
-        widthScreen = dc.getWidth();
-        heightScreen = dc.getHeight();
+        _widthScreen = dc.getWidth();
+        _heightScreen = dc.getHeight();
     }
 
     // Called when this View is brought to the foreground.
@@ -43,49 +43,36 @@ class BinaryWatchFaceView extends WatchUi.WatchFace
 
         drawDateLine(dc);
 
-        drawHourLine(dc, clockTime);
-        drawMinutesLine(dc, clockTime);
-        drawSecondsLine(dc, clockTime);
+		drawBinaryClock(dc, clockTime);
+		drawDecimalClock(dc, clockTime);
     }
 
     private function drawDateLine(dc as Dc) as Void
     {
 		var today = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
-		var dateString = Lang.format(
-		    "$1$, $2$ $3$ $4$",
-		    [
-		        today.day_of_week,
-		        today.day,
-		        today.month,
-		        today.year
-		    ]
-		);
-		
-		var font = Graphics.FONT_MEDIUM;
+		var date = Lang.format("$1$, $2$ $3$ $4$", [
+	        today.day_of_week,
+	        today.day,
+	        today.month,
+	        today.year
+	    ]);
         
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(widthScreen/2, 20, font, dateString, Graphics.TEXT_JUSTIFY_CENTER + Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(_widthScreen/2, 20, Graphics.FONT_MEDIUM, date, Graphics.TEXT_JUSTIFY_CENTER + Graphics.TEXT_JUSTIFY_VCENTER);
     }
 
-    private function drawHourLine(dc as Dc, clockTime as ClockTime) as Void
+    private function drawBinaryClock(dc as Dc, clockTime as ClockTime) as Void
     {
-        drawBinary(dc, widthScreen/2, heightScreen/2 - 55, padLeftZeros(decToBinary(clockTime.hour)));
-
-        drawDecimal(dc, widthScreen/2+115, heightScreen/2 - 45, clockTime.hour.format("%02d"));
+        drawBinary(dc, _widthScreen/2, _heightScreen/2 - 55, _binaryRenderer.fromDecimal(clockTime.hour));
+        drawBinary(dc, _widthScreen/2, _heightScreen/2, _binaryRenderer.fromDecimal(clockTime.min));
+        drawBinary(dc, _widthScreen/2, _heightScreen/32 * 25, _binaryRenderer.fromDecimal(clockTime.sec));
     }
 
-    private function drawMinutesLine(dc as Dc, clockTime as ClockTime) as Void
+    private function drawDecimalClock(dc as Dc, clockTime as ClockTime) as Void
     {
-        drawBinary(dc, widthScreen/2, heightScreen/2, padLeftZeros(decToBinary(clockTime.min)));
-
-        drawDecimal(dc, widthScreen/2+115, heightScreen/2 - 15, clockTime.min.format("%02d"));
-    }
-
-    private function drawSecondsLine(dc as Dc, clockTime as ClockTime) as Void
-    {
-        drawBinary(dc, widthScreen/2, heightScreen/32 * 25, padLeftZeros(decToBinary(clockTime.sec)));
-
-        drawDecimal(dc, widthScreen/2+115, heightScreen/2 + 15, clockTime.sec.format("%02d"));
+        drawDecimal(dc, _widthScreen/2+115, _heightScreen/2 - 45, clockTime.hour.format("%02d"));
+        drawDecimal(dc, _widthScreen/2+115, _heightScreen/2 - 15, clockTime.min.format("%02d"));
+        drawDecimal(dc, _widthScreen/2+115, _heightScreen/2 + 15, clockTime.sec.format("%02d"));
     }
 
     private function drawBinary(dc as Dc, width as Int, height as Int, time as String) as Void
@@ -98,39 +85,6 @@ class BinaryWatchFaceView extends WatchUi.WatchFace
     {
         dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
         dc.drawText(width, height, Graphics.FONT_SMALL, time, Graphics.TEXT_JUSTIFY_RIGHT);
-    }
-
-    private function decToBinary(n as Int) as String
-    {
-        var binaryNum = new Int[32];
-        var i = 0;
-        while (n > 0) {
-            binaryNum[i] = n % 2;
-            n = n / 2;
-            i++;
-        }
- 
-        var result = "";
-        for (var j = i - 1; j >= 0; j--) {
-            result += binaryNum[j];
-        }
-        
-        return result;
-    }
-
-    private function padLeftZeros(inputString as String) as String
-    {
-        if (inputString.length() >= BINARY_ZEROS_LENGTH) {
-            return inputString;
-        }
-
-        var sb = "";
-        while (sb.length() < BINARY_ZEROS_LENGTH - inputString.length()) {
-            sb += "0";
-        }
-        sb += inputString;
-    
-        return sb.toString();
     }
 
     // Called when this View is removed from the screen. 
