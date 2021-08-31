@@ -8,9 +8,9 @@ using Toybox.WatchUi;
  */
 class BinaryRenderer
 {
-	private var _binaryZerosLength;
-	
-	private var _conversor as BinaryConversor;
+    private var _binaryZerosLength;
+    
+    private var _conversor as BinaryConversor;
 
     function initialize(binaryZerosLength as Int) as Void
     {

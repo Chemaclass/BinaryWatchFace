@@ -43,19 +43,19 @@ class BinaryWatchFaceView extends WatchUi.WatchFace
 
         drawDateLine(dc);
 
-		drawBinaryClock(dc, clockTime);
-		drawDecimalClock(dc, clockTime);
+        drawBinaryClock(dc, clockTime);
+        drawDecimalClock(dc, clockTime);
     }
 
     private function drawDateLine(dc as Dc) as Void
     {
-		var today = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
-		var date = Lang.format("$1$, $2$ $3$ $4$", [
-	        today.day_of_week,
-	        today.day,
-	        today.month,
-	        today.year
-	    ]);
+        var today = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
+        var date = Lang.format("$1$, $2$ $3$ $4$", [
+            today.day_of_week,
+            today.day,
+            today.month,
+            today.year
+        ]);
         
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
         dc.drawText(_widthScreen/2, 20, Graphics.FONT_MEDIUM, date, Graphics.TEXT_JUSTIFY_CENTER + Graphics.TEXT_JUSTIFY_VCENTER);
