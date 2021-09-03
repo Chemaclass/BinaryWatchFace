@@ -70,39 +70,26 @@ class BinaryWatchFaceView extends WatchUi.WatchFace
     {
         dc.setColor(_app.getProperty("BinaryClockColor"), Graphics.COLOR_TRANSPARENT);
 
-        drawBinary(dc, _heightScreen/2 - 55, _binaryRenderer.fromDecimal(clockTime.hour));
-        drawBinary(dc, _heightScreen/2, _binaryRenderer.fromDecimal(clockTime.min));
-        drawBinary(dc, _heightScreen/32 * 25, _binaryRenderer.fromDecimal(clockTime.sec));
-    }
+        var width = _widthScreen/2;
+        var font = Graphics.FONT_LARGE * 2;
+        var justification = Graphics.TEXT_JUSTIFY_CENTER + Graphics.TEXT_JUSTIFY_VCENTER;
 
-    private function drawBinary(dc as Dc, height as Int, time as String) as Void
-    {
-        dc.drawText(_widthScreen/2, height, Graphics.FONT_LARGE * 2, time, Graphics.TEXT_JUSTIFY_CENTER + Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(width, _heightScreen/2 - 55, font, _binaryRenderer.fromDecimal(clockTime.hour), justification);
+        dc.drawText(width, _heightScreen/2, font, _binaryRenderer.fromDecimal(clockTime.min), justification);
+        dc.drawText(width, _heightScreen/32 * 25, font, _binaryRenderer.fromDecimal(clockTime.sec), justification);
     }
 
     private function drawDecimalClock(dc as Dc, clockTime as ClockTime) as Void
     {
-        var timeFormat = "$1$:$2$";
-        var hours = clockTime.hour;
-        if (!System.getDeviceSettings().is24Hour) {
-            if (hours > 12) {
-                hours = hours - 12;
-            }
-        } else if (Application.getApp().getProperty("UseMilitaryFormat")) {
-            timeFormat = "$1$$2$";
-            hours = hours.format("%02d");
-        }
-        
         dc.setColor(_app.getProperty("DecimalClockColor"), Graphics.COLOR_TRANSPARENT);
 
-        drawDecimal(dc, _heightScreen/2 - 45, hours);
-        drawDecimal(dc, _heightScreen/2 - 15, clockTime.min.format("%02d"));
-        drawDecimal(dc, _heightScreen/2 + 15, clockTime.sec.format("%02d"));
-    }
+        var width = _widthScreen/2 + 115;
+        var font = Graphics.FONT_SMALL;
+        var justification = Graphics.TEXT_JUSTIFY_RIGHT;
 
-    private function drawDecimal(dc as Dc, height as Int, time as String) as Void 
-    {
-        dc.drawText(_widthScreen/2+115, height, Graphics.FONT_SMALL, time, Graphics.TEXT_JUSTIFY_RIGHT);
+        dc.drawText(width, _heightScreen/2 - 45, font, clockTime.hour.format("%02d"), justification);
+        dc.drawText(width, _heightScreen/2 - 15, font, clockTime.min.format("%02d"), justification);
+        dc.drawText(width, _heightScreen/2 + 15, font, clockTime.sec.format("%02d"), justification);
     }
 
     // Called when this View is removed from the screen. 
