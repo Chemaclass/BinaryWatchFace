@@ -87,7 +87,7 @@ class BinaryWatchFaceView extends WatchUi.WatchFace
         var font = Graphics.FONT_SMALL;
         var justification = Graphics.TEXT_JUSTIFY_RIGHT;
 
-		dc.setColor(_app.getProperty("DecimalClockColor"), Graphics.COLOR_TRANSPARENT);
+        dc.setColor(_app.getProperty("DecimalClockColor"), Graphics.COLOR_TRANSPARENT);
         dc.drawText(width, _heightScreen/2 - 45, font, clockTime.hour.format("%02d"), justification);
         dc.drawText(width, _heightScreen/2 - 15, font, clockTime.min.format("%02d"), justification);
         dc.drawText(width, _heightScreen/2 + 15, font, clockTime.sec.format("%02d"), justification);
@@ -96,8 +96,11 @@ class BinaryWatchFaceView extends WatchUi.WatchFace
     private function drawBattery(dc as Dc) as Void
     {
         var stats = System.getSystemStats();
-
-		var text = Math.round(stats.battery).format("%d")+ "%";
+        var text = "";
+        if (stats.charging) {
+            text += "Charging...";
+        }
+        text += Math.round(stats.battery).format("%d")+ "%";
         var font = Graphics.FONT_SMALL;
         var justification = Graphics.TEXT_JUSTIFY_RIGHT;
 
