@@ -1,19 +1,23 @@
 <strings>
-    <string id="AppName">${appName}</string>
+	<string id="AppName">BinaryWatchFace</string>
 
-    <string id="DateColorTitle">Date color</string>
-    <string id="BinaryClockColorTitle">Binary clock color</string>
-    <string id="DecimalClockColorTitle">Decimal clock color</string>
-    <string id="ShouldDisplayDecimalTimeTitle">Display decimal clock</string>
+	<string id="DateColorTitle">Date color</string>
+	<string id="BinaryClockColorTitle">Binary clock color</string>
 
-    <string id="ColorWhite">White</string>
-    <string id="ColorBlack">Black</string>
-    <string id="ColorGray">Gray</string>
-    <string id="ColorLightGray">Light Gray</string>
-    <string id="ColorRed">Red</string>
-    <string id="ColorLightRed">Red</string>
-    <string id="ColorGreen">Green</string>
-    <string id="ColorLightGreen">Light Green</string>
-    <string id="ColorBlue">Blue</string>
-    <string id="ColorLightBlue">Light Blue</string>
+	<string id="ShouldDisplayDecimalTimeTitle">Display decimal clock</string>
+	<string id="DecimalClockColorTitle">Decimal clock color</string>
+
+	<string id="ShouldDisplayBatteryTitle">Display battery</string>
+	<string id="BatteryColorTitle">Battery color</string>
+
+	<string id="ColorWhite">White</string>
+	<string id="ColorBlack">Black</string>
+	<string id="ColorGray">Gray</string>
+	<string id="ColorLightGray">Light Gray</string>
+	<string id="ColorRed">Red</string>
+	<string id="ColorLightRed">Light Red</string>
+	<string id="ColorGreen">Green</string>
+	<string id="ColorLightGreen">Light Green</string>
+	<string id="ColorBlue">Blue</string>
+	<string id="ColorLightBlue">Light Blue</string>
 </strings>

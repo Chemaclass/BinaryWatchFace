@@ -1,6 +1,8 @@
 <properties>
-	<property id="DateColor" type="number">0xFFFFFF</property>
-	<property id="BinaryClockColor" type="number">0xFFFFFF</property>
-	<property id="DecimalClockColor" type="number">0x808080</property>
-	<property id="ShouldDisplayDecimalTime" type="boolean">true</property>
+    <property id="DateColor" type="number">0xFFFFFF</property>
+    <property id="BinaryClockColor" type="number">0xFFFFFF</property>
+    <property id="DecimalClockColor" type="number">0x808080</property>
+    <property id="BatteryColor" type="number">0xFFFFFF</property>
+    <property id="ShouldDisplayDecimalTime" type="boolean">true</property>
+    <property id="ShouldDisplayBattery" type="boolean">true</property>
 </properties>

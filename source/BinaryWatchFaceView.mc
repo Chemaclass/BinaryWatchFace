@@ -50,6 +50,9 @@ class BinaryWatchFaceView extends WatchUi.WatchFace
         if (_app.getProperty("ShouldDisplayDecimalTime")) {
             drawDecimalClock(dc, clockTime);
         }
+        if (_app.getProperty("ShouldDisplayBattery")) {
+            drawBattery(dc);
+        }
     }
 
     private function drawDateLine(dc as Dc) as Void
@@ -68,12 +71,11 @@ class BinaryWatchFaceView extends WatchUi.WatchFace
 
     private function drawBinaryClock(dc as Dc, clockTime as ClockTime) as Void
     {
-        dc.setColor(_app.getProperty("BinaryClockColor"), Graphics.COLOR_TRANSPARENT);
-
         var width = _widthScreen/2;
         var font = Graphics.FONT_LARGE * 2;
         var justification = Graphics.TEXT_JUSTIFY_CENTER + Graphics.TEXT_JUSTIFY_VCENTER;
 
+        dc.setColor(_app.getProperty("BinaryClockColor"), Graphics.COLOR_TRANSPARENT);
         dc.drawText(width, _heightScreen/2 - 55, font, _binaryRenderer.fromDecimal(clockTime.hour), justification);
         dc.drawText(width, _heightScreen/2, font, _binaryRenderer.fromDecimal(clockTime.min), justification);
         dc.drawText(width, _heightScreen/32 * 25, font, _binaryRenderer.fromDecimal(clockTime.sec), justification);
@@ -81,15 +83,26 @@ class BinaryWatchFaceView extends WatchUi.WatchFace
 
     private function drawDecimalClock(dc as Dc, clockTime as ClockTime) as Void
     {
-        dc.setColor(_app.getProperty("DecimalClockColor"), Graphics.COLOR_TRANSPARENT);
-
         var width = _widthScreen/2 + 115;
         var font = Graphics.FONT_SMALL;
         var justification = Graphics.TEXT_JUSTIFY_RIGHT;
 
+		dc.setColor(_app.getProperty("DecimalClockColor"), Graphics.COLOR_TRANSPARENT);
         dc.drawText(width, _heightScreen/2 - 45, font, clockTime.hour.format("%02d"), justification);
         dc.drawText(width, _heightScreen/2 - 15, font, clockTime.min.format("%02d"), justification);
         dc.drawText(width, _heightScreen/2 + 15, font, clockTime.sec.format("%02d"), justification);
+    }
+
+    private function drawBattery(dc as Dc) as Void
+    {
+        var stats = System.getSystemStats();
+
+		var text = Math.round(stats.battery).format("%d")+ "%";
+        var font = Graphics.FONT_SMALL;
+        var justification = Graphics.TEXT_JUSTIFY_RIGHT;
+
+        dc.setColor(_app.getProperty("BatteryColor"), Graphics.COLOR_TRANSPARENT);
+        dc.drawText(_widthScreen, _heightScreen - 30, font, text, justification);
     }
 
     // Called when this View is removed from the screen. 
