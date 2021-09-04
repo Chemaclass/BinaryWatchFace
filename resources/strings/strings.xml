@@ -12,6 +12,9 @@
 
 	<string id="ShouldDisplayStepsTitle">Display steps</string>
 	<string id="StepsColorTitle">Steps color</string>
+	
+	<string id="ShouldDisplayHeartRateTitle">Display heart rate</string>
+	<string id="HeartRateColorTitle">Heart rate color</string>
 
 	<string id="ColorWhite">White</string>
 	<string id="ColorBlack">Black</string>

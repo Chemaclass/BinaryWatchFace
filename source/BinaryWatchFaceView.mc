@@ -46,7 +46,7 @@ class BinaryWatchFaceView extends WatchUi.WatchFace
 
         drawDateLine(dc);
         drawBinaryClock(dc, clockTime);
-        
+
         if (_app.getProperty("ShouldDisplayDecimalTime")) {
             drawDecimalClock(dc, clockTime);
         }
