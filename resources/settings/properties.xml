@@ -10,7 +10,7 @@
 
 	<property id="ShouldDisplaySteps" type="boolean">true</property>
 	<property id="StepsColor" type="number">0xFFFFFF</property>
-	
+
 	<property id="ShouldDisplayHeartRate" type="boolean">true</property>
 	<property id="HeartRateColor" type="number">0xFFFFFF</property>
 </properties>

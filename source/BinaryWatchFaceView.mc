@@ -7,16 +7,15 @@ using Toybox.Time.Gregorian;
 
 class BinaryWatchFaceView extends WatchUi.WatchFace
 {
-    private var _binaryRenderer as BinaryRenderer;
-
-    private var _app as Application;
-    private var _widthScreen as Int;
-    private var _heightScreen as Int;
+	private var _dateLineDrawer as DateLineDrawer;
+	private var _binaryClockDrawer as BinaryClockDrawer;
+	private var _decimalClockDrawer as DecimalClockDrawer;
+	private var _stepsDrawer as StepsDrawer;
+	private var _batteryDrawer as BatteryDrawer;
 
     function initialize() as Void
     {
         WatchFace.initialize();
-        _binaryRenderer = new BinaryRenderer(6);
     }
 
     // Load your resources here
@@ -24,10 +23,15 @@ class BinaryWatchFaceView extends WatchUi.WatchFace
     {
         setLayout(Rez.Layouts.WatchFace(dc));
 
-        _app = Application.getApp();
-
-        _widthScreen = dc.getWidth();
-        _heightScreen = dc.getHeight();
+        var app = Application.getApp();
+        var width = dc.getWidth();
+        var height = dc.getHeight();
+        
+        _dateLineDrawer = new DateLineDrawer(app, width, height);
+        _binaryClockDrawer = new BinaryClockDrawer(app, width, height);
+        _decimalClockDrawer = new DecimalClockDrawer(app, width, height);
+        _stepsDrawer = new StepsDrawer(app, width, height);
+        _batteryDrawer = new BatteryDrawer(app, width, height);
     }
 
     // Called when this View is brought to the foreground.
@@ -43,84 +47,19 @@ class BinaryWatchFaceView extends WatchUi.WatchFace
         View.onUpdate(dc);
 
         var clockTime = System.getClockTime();
+        _dateLineDrawer.draw(dc);
+        _binaryClockDrawer.draw(dc, clockTime);
 
-        drawDateLine(dc);
-        drawBinaryClock(dc, clockTime);
-
-        if (_app.getProperty("ShouldDisplayDecimalTime")) {
-            drawDecimalClock(dc, clockTime);
+        var app = Application.getApp();
+        if (app.getProperty("ShouldDisplayDecimalTime")) {
+        	_decimalClockDrawer.draw(dc, clockTime);
         }
-        if (_app.getProperty("ShouldDisplaySteps")) {
-            drawSteps(dc);
+        if (app.getProperty("ShouldDisplaySteps")) {
+            _stepsDrawer.draw(dc);
         }
-        if (_app.getProperty("ShouldDisplayBattery")) {
-            drawBattery(dc);
+        if (app.getProperty("ShouldDisplayBattery")) {
+            _batteryDrawer.draw(dc);
         }
-    }
-
-    private function drawDateLine(dc as Dc) as Void
-    {
-        var today = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
-        var date = Lang.format("$1$, $2$ $3$ $4$", [
-            today.day_of_week,
-            today.day,
-            today.month,
-            today.year
-        ]);
-        var justification = Graphics.TEXT_JUSTIFY_CENTER + Graphics.TEXT_JUSTIFY_VCENTER;
-        
-        dc.setColor(_app.getProperty("DateColor"), Graphics.COLOR_TRANSPARENT);
-        dc.drawText(_widthScreen/2, 20, Graphics.FONT_MEDIUM, date, justification);
-    }
-
-    private function drawBinaryClock(dc as Dc, clockTime as ClockTime) as Void
-    {
-        var width = _widthScreen/2;
-        var font = Graphics.FONT_LARGE * 2;
-        var justification = Graphics.TEXT_JUSTIFY_CENTER + Graphics.TEXT_JUSTIFY_VCENTER;
-
-        dc.setColor(_app.getProperty("BinaryClockColor"), Graphics.COLOR_TRANSPARENT);
-        dc.drawText(width, _heightScreen/2 - 55, font, _binaryRenderer.fromDecimal(clockTime.hour), justification);
-        dc.drawText(width, _heightScreen/2, font, _binaryRenderer.fromDecimal(clockTime.min), justification);
-        dc.drawText(width, _heightScreen/32 * 25, font, _binaryRenderer.fromDecimal(clockTime.sec), justification);
-    }
-
-    private function drawDecimalClock(dc as Dc, clockTime as ClockTime) as Void
-    {
-        var width = _widthScreen/2 + 115;
-        var font = Graphics.FONT_SMALL;
-        var justification = Graphics.TEXT_JUSTIFY_RIGHT;
-
-        dc.setColor(_app.getProperty("DecimalClockColor"), Graphics.COLOR_TRANSPARENT);
-        dc.drawText(width, _heightScreen/2 - 45, font, clockTime.hour.format("%02d"), justification);
-        dc.drawText(width, _heightScreen/2 - 15, font, clockTime.min.format("%02d"), justification);
-        dc.drawText(width, _heightScreen/2 + 15, font, clockTime.sec.format("%02d"), justification);
-    }
-
-    private function drawSteps(dc as Dc) as Void
-    {
-        var info = ActivityMonitor.getInfo();
-        var text = "Steps:" + Math.round(info.steps).format("%d");
-        var font = Graphics.FONT_SMALL;
-        var justification = Graphics.TEXT_JUSTIFY_LEFT;
-
-        dc.setColor(_app.getProperty("StepsColor"), Graphics.COLOR_TRANSPARENT);
-        dc.drawText(0, _heightScreen - 30, font, text, justification);
-    }
-
-    private function drawBattery(dc as Dc) as Void
-    {
-        var stats = System.getSystemStats();
-        var text = "";
-        if (stats.charging) {
-            text += "Charging|";
-        }
-        text += Math.round(stats.battery).format("%d")+ "%";
-        var font = Graphics.FONT_SMALL;
-        var justification = Graphics.TEXT_JUSTIFY_RIGHT;
-
-        dc.setColor(_app.getProperty("BatteryColor"), Graphics.COLOR_TRANSPARENT);
-        dc.drawText(_widthScreen, _heightScreen - 30, font, text, justification);
     }
 
     // Called when this View is removed from the screen. 
