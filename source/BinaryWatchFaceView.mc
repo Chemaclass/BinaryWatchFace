@@ -50,6 +50,9 @@ class BinaryWatchFaceView extends WatchUi.WatchFace
         if (_app.getProperty("ShouldDisplayDecimalTime")) {
             drawDecimalClock(dc, clockTime);
         }
+        if (_app.getProperty("ShouldDisplaySteps")) {
+            drawSteps(dc);
+        }
         if (_app.getProperty("ShouldDisplayBattery")) {
             drawBattery(dc);
         }
@@ -64,9 +67,10 @@ class BinaryWatchFaceView extends WatchUi.WatchFace
             today.month,
             today.year
         ]);
+        var justification = Graphics.TEXT_JUSTIFY_CENTER + Graphics.TEXT_JUSTIFY_VCENTER;
         
         dc.setColor(_app.getProperty("DateColor"), Graphics.COLOR_TRANSPARENT);
-        dc.drawText(_widthScreen/2, 20, Graphics.FONT_MEDIUM, date, Graphics.TEXT_JUSTIFY_CENTER + Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(_widthScreen/2, 20, Graphics.FONT_MEDIUM, date, justification);
     }
 
     private function drawBinaryClock(dc as Dc, clockTime as ClockTime) as Void
@@ -93,12 +97,23 @@ class BinaryWatchFaceView extends WatchUi.WatchFace
         dc.drawText(width, _heightScreen/2 + 15, font, clockTime.sec.format("%02d"), justification);
     }
 
+    private function drawSteps(dc as Dc) as Void
+    {
+        var info = ActivityMonitor.getInfo();
+        var text = "Steps:" + Math.round(info.steps).format("%d");
+        var font = Graphics.FONT_SMALL;
+        var justification = Graphics.TEXT_JUSTIFY_LEFT;
+
+        dc.setColor(_app.getProperty("StepsColor"), Graphics.COLOR_TRANSPARENT);
+        dc.drawText(0, _heightScreen - 30, font, text, justification);
+    }
+
     private function drawBattery(dc as Dc) as Void
     {
         var stats = System.getSystemStats();
         var text = "";
         if (stats.charging) {
-            text += "Charging...";
+            text += "Charging|";
         }
         text += Math.round(stats.battery).format("%d")+ "%";
         var font = Graphics.FONT_SMALL;
