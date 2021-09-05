@@ -7,15 +7,12 @@ using Toybox.Time.Gregorian;
 
 class BinaryWatchFaceView extends WatchUi.WatchFace
 {
-	private var _dateLineDrawer as DateLineDrawer;
-	private var _binaryClockDrawer as BinaryClockDrawer;
-	private var _decimalClockDrawer as DecimalClockDrawer;
-	private var _stepsDrawer as StepsDrawer;
-	private var _batteryDrawer as BatteryDrawer;
+    private var _drawers as Array<Object>;
 
     function initialize() as Void
     {
         WatchFace.initialize();
+        _drawers = new Array<Object>[5];
     }
 
     // Load your resources here
@@ -23,15 +20,14 @@ class BinaryWatchFaceView extends WatchUi.WatchFace
     {
         setLayout(Rez.Layouts.WatchFace(dc));
 
-        var app = Application.getApp();
         var width = dc.getWidth();
         var height = dc.getHeight();
-        
-        _dateLineDrawer = new DateLineDrawer(app, width, height);
-        _binaryClockDrawer = new BinaryClockDrawer(app, width, height);
-        _decimalClockDrawer = new DecimalClockDrawer(app, width, height);
-        _stepsDrawer = new StepsDrawer(app, width, height);
-        _batteryDrawer = new BatteryDrawer(app, width, height);
+
+        _drawers[0] = new BatteryDrawer();
+        _drawers[1] = new BinaryClockDrawer();
+        _drawers[2] = new DateLineDrawer();
+        _drawers[3] = new DecimalClockDrawer();
+        _drawers[4] = new StepsDrawer();
     }
 
     // Called when this View is brought to the foreground.
@@ -46,19 +42,8 @@ class BinaryWatchFaceView extends WatchUi.WatchFace
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
 
-        var clockTime = System.getClockTime();
-        _dateLineDrawer.draw(dc);
-        _binaryClockDrawer.draw(dc, clockTime);
-
-        var app = Application.getApp();
-        if (app.getProperty("ShouldDisplayDecimalTime")) {
-        	_decimalClockDrawer.draw(dc, clockTime);
-        }
-        if (app.getProperty("ShouldDisplaySteps")) {
-            _stepsDrawer.draw(dc);
-        }
-        if (app.getProperty("ShouldDisplayBattery")) {
-            _batteryDrawer.draw(dc);
+        for (var i = 0; i < _drawers.size(); i++) {
+            _drawers[i].draw(dc);
         }
     }
 

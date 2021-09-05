@@ -7,19 +7,16 @@ using Toybox.Time.Gregorian;
 
 class BatteryDrawer
 {
-    private var _app as Application;
-    private var _widthScreen as Int;
-    private var _heightScreen as Int;
-
-    function initialize(app, widthScreen, heightScreen)
-    {
-        _app = app;
-        _widthScreen = widthScreen;
-        _heightScreen = heightScreen;        
-    }
-
     public function draw(dc as Dc) as Void
     {
+        var app = Application.getApp();
+        if (!app.getProperty("ShouldDisplayBattery")) { 
+            return;
+        }
+
+        var width = dc.getWidth();
+        var height = dc.getHeight();
+
         var stats = System.getSystemStats();
         var text = "";
         if (stats.charging) {
@@ -29,7 +26,7 @@ class BatteryDrawer
         var font = Graphics.FONT_SMALL;
         var justification = Graphics.TEXT_JUSTIFY_RIGHT;
 
-        dc.setColor(_app.getProperty("BatteryColor"), Graphics.COLOR_TRANSPARENT);
-        dc.drawText(_widthScreen, _heightScreen - 30, font, text, justification);
+        dc.setColor(app.getProperty("BatteryColor"), Graphics.COLOR_TRANSPARENT);
+        dc.drawText(width, height - 30, font, text, justification);
     }
 }

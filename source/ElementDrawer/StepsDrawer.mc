@@ -7,25 +7,21 @@ using Toybox.Time.Gregorian;
 
 class StepsDrawer
 {
-    private var _app as Application;
-    private var _widthScreen as Int;
-    private var _heightScreen as Int;
-
-    function initialize(app, widthScreen, heightScreen)
-    {
-        _app = app;
-        _widthScreen = widthScreen;
-        _heightScreen = heightScreen;        
-    }
-
     public function draw(dc as Dc) as Void
     {
+        var app = Application.getApp();
+        if (!app.getProperty("ShouldDisplaySteps")) { 
+            return; 
+        }
+
         var info = ActivityMonitor.getInfo();
         var text = "Steps:" + Math.round(info.steps).format("%d");
         var font = Graphics.FONT_SMALL;
+        var height = dc.getHeight();
         var justification = Graphics.TEXT_JUSTIFY_LEFT;
 
-        dc.setColor(_app.getProperty("StepsColor"), Graphics.COLOR_TRANSPARENT);
-        dc.drawText(0, _heightScreen - 30, font, text, justification);
+        dc.setColor(app.getProperty("StepsColor"), Graphics.COLOR_TRANSPARENT);
+        dc.drawText(0, height - 30, font, text, justification);
     }
+
 }
