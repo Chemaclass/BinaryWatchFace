@@ -5,7 +5,7 @@ using Toybox.WatchUi;
 using Toybox.Time;
 using Toybox.Time.Gregorian;
 
-class StepsDrawer
+class StepsComponent
 {
     public function draw(dc as Dc) as Void
     {

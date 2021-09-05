@@ -5,7 +5,7 @@ using Toybox.WatchUi;
 using Toybox.Time;
 using Toybox.Time.Gregorian;
 
-class BinaryClockDrawer
+class BinaryClockComponent
 {
     private var _binaryRenderer as BinaryRenderer;
 

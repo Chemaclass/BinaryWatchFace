@@ -5,7 +5,7 @@ using Toybox.WatchUi;
 using Toybox.Time;
 using Toybox.Time.Gregorian;
 
-class DateLineDrawer
+class DateLineComponent
 {
     public function draw(dc as Dc) as Void
     {

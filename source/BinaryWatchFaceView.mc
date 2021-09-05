@@ -7,12 +7,12 @@ using Toybox.Time.Gregorian;
 
 class BinaryWatchFaceView extends WatchUi.WatchFace
 {
-    private var _drawers as Array<Object>;
+    private var _components as Array<Object>;
 
     function initialize() as Void
     {
         WatchFace.initialize();
-        _drawers = new Array<Object>[5];
+        _components = new Array<Object>[5];
     }
 
     // Load your resources here
@@ -20,14 +20,11 @@ class BinaryWatchFaceView extends WatchUi.WatchFace
     {
         setLayout(Rez.Layouts.WatchFace(dc));
 
-        var width = dc.getWidth();
-        var height = dc.getHeight();
-
-        _drawers[0] = new BatteryDrawer();
-        _drawers[1] = new BinaryClockDrawer();
-        _drawers[2] = new DateLineDrawer();
-        _drawers[3] = new DecimalClockDrawer();
-        _drawers[4] = new StepsDrawer();
+        _components[0] = new BatteryComponent();
+        _components[1] = new BinaryClockComponent();
+        _components[2] = new DateLineComponent();
+        _components[3] = new DecimalClockComponent();
+        _components[4] = new StepsComponent();
     }
 
     // Called when this View is brought to the foreground.
@@ -42,8 +39,8 @@ class BinaryWatchFaceView extends WatchUi.WatchFace
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
 
-        for (var i = 0; i < _drawers.size(); i++) {
-            _drawers[i].draw(dc);
+        for (var i = 0; i < _components.size(); i++) {
+            _components[i].draw(dc);
         }
     }
 
