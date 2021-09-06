@@ -21,9 +21,9 @@ class BinaryWatchFaceView extends WatchUi.WatchFace
         setLayout(Rez.Layouts.WatchFace(dc));
 
         _components[0] = new BatteryComponent();
-        _components[1] = new BinaryClockComponent();
+        _components[1] = new ClockBinaryComponent();
         _components[2] = new DateLineComponent();
-        _components[3] = new DecimalClockComponent();
+        _components[3] = new ClockDecimalComponent();
         _components[4] = new StepsComponent();
     }
 

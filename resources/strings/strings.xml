@@ -1,6 +1,8 @@
 <strings>
 	<string id="AppName">BinaryWatchFace</string>
 
+	<string id="ShouldDisplaySecondsTitle">Display seconds</string>
+	
 	<string id="DateColorTitle">Date color</string>
 	<string id="BinaryClockColorTitle">Binary clock color</string>
 

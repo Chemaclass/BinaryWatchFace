@@ -1,5 +1,10 @@
 <settings>
 
+	<setting propertyKey="@Properties.ShouldDisplaySeconds"
+		title="@Strings.ShouldDisplaySecondsTitle">
+		<settingConfig type="boolean" />
+	</setting>
+
 	<setting propertyKey="@Properties.DateColor"
 		title="@Strings.DateColorTitle">
 		<settingConfig type="list">
